@@ -1,0 +1,85 @@
+
+.logo {
+  background-color: #0D122B;
+  padding: 10px;
+  margin: 10px auto;
+  /* width: 240px; */
+  color: white;
+  border-radius: 35px;
+}
+
+.nav-pills {
+  margin: 0 auto;
+  padding: 0;
+  width: 150px;
+}
+
+.header-container{
+  /* padding: 10px; */
+  margin: 10px auto;
+  width: 320px;
+  padding: 50px 30px;
+}
+
+.form-container{
+  margin: 20px auto;
+  /* padding: 0; */
+  width: 550px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  padding: 22vh 12px;
+  font-size: 14px;
+  background: #eee;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.file-input {
+  display: inline-block;
+  text-align: left;
+  background: #fff;
+  padding: 16px;
+  width: 450px;
+  position: relative;
+  border-radius: 3px;
+}
+
+.file-input > [type='file'] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: 10;
+  cursor: pointer;
+}
+
+.file-input > .button {
+  display: inline-block;
+  cursor: pointer;
+  background: #eee;
+  padding: 8px 16px;
+  border-radius: 2px;
+  margin-right: 8px;
+}
+
+.file-input:hover > .button {
+  background: dodgerblue;
+  color: white;
+}
+
+.file-input > .label {
+  color: #333;
+  white-space: nowrap;
+  opacity: .3;
+}
+
+.file-input.-chosen > .label {
+  opacity: 1;
+}

@@ -1,0 +1,6 @@
+Flask
+Werkzeug
+keras
+tensorflow-macos
+Pillow
+numpy
