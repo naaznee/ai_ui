@@ -2,14 +2,24 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>About</title>
+    <title>Help</title>
   </head>
   <body>
     {% extends "template.html" %}
     {% block content %}
 
-    <h1> About </h1>
-    <p> About.</p>
+    <h1> How to use </h1>
+    <ol style="
+    width: 550px;
+    text-align: left;
+    margin: 0 auto;
+    font-size: 15px;">
+      <li>Click choose files to open a diaglog that will let you upload your image(s)</li>
+      <li>Select the image that you want to analyze and click open.</li>
+      <li>Then click on the Process button in blue, to upload your images for processing.</li>
+      <li>Be patient while we analyze the image(s)</li>
+      <li>Once the analysis is done You should see the table of results with a thumbnail of the original image also with the age, gender and ethnicity estimation.</li>
+    </ol>
 
     {% endblock %}
   </body>

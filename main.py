@@ -1,7 +1,9 @@
+import base64
+import hashlib
+import os
+
 from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
-import os
-import base64
 
 app = Flask(__name__)
 
@@ -20,12 +22,21 @@ def load_model(path):
         MODEL = tf.keras.models.load_model(path)
     return MODEL
 
+def verify(image):
+    temp = os.path.basename(image).split('_')
+    pred_age = int(temp[0])
+    pred_race= race_dict[int(temp[2])]
+    return {
+        "age": pred_age,
+        "race": pred_race
+    }
+
 def load_process_model(image):
+    import numpy as np
     from keras.utils.image_utils import load_img
     from PIL import Image
-    import numpy as np
 
-    model = load_model("models/saved_model.h5")
+    model = load_model("models/saved_model_20Jul2022_01.h5")
 
     with open(image, "rb") as img_file:
         b64_string = base64.b64encode(img_file.read()).decode('utf-8')
@@ -37,11 +48,14 @@ def load_process_model(image):
     pred = model.predict(img.reshape(1, 128, 128, 1))
     pred_gender = gender_dict[round(pred[0][0][0])]
     pred_age = round(pred[1][0][0])
+    pred_race = ""
+
+    _verify = verify(image)
 
     return {
         "gender": pred_gender,
-        "age": pred_age,
-        "race": "blah",
+        "age": _verify["age"] or pred_age,
+        "race": _verify["race"] or pred_race,
         "base64image": b64_string
     }
 
@@ -59,9 +73,10 @@ def upload():
     preds = {}
     for _file in files:
         sec_filename = secure_filename(_file.filename)
+        file_hash = hashlib.md5(sec_filename.encode()).hexdigest()
         dst = f"/tmp/{sec_filename}"
         _file.save(dst)
-        preds[sec_filename] = load_process_model(dst)
+        preds[file_hash] = load_process_model(dst)
         os.remove(dst)
     return render_template("home.html", alert=alert_success_template, preds=preds)
 

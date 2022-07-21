@@ -3,7 +3,6 @@
   background-color: #0D122B;
   padding: 10px;
   margin: 10px auto;
-  /* width: 240px; */
   color: white;
   border-radius: 35px;
 }
@@ -15,15 +14,13 @@
 }
 
 .header-container{
-  /* padding: 10px; */
   margin: 10px auto;
-  width: 320px;
+  width: 520px;
   padding: 50px 30px;
 }
 
 .form-container{
   margin: 20px auto;
-  /* padding: 0; */
   width: 550px;
 }
 

@@ -1,5 +1,3 @@
-// Also see: https://www.quirksmode.org/dom/inputfile.html
-
 var inputs = document.querySelectorAll('.file-input')
 
 for (var i = 0, len = inputs.length; i < len; i++) {
