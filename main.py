@@ -13,20 +13,29 @@ alert_success_template = '<div class="alert alert-success" role="alert">Files up
 gender_dict = {0:'Male', 1:'Female'}
 race_dict={0:'White', 1:'Black',2:'Asian',3:'Indian',4:'Others (like Hispanic, Latino, Middle Eastern)'}
 
-MODEL = None
+model_filemap = {
+    "gender":"models/saved_model_20Jul2022_01.h5",
+    "age": "models/saved_model_20Jul2022_01.h5",
+    "race": "models/saved_model_21Jul2022_race_02.h5"
+}
+
+MODELS = {}
 
 def load_model(path):
     import tensorflow as tf
-    global MODEL
-    if not MODEL:
-        MODEL = tf.keras.models.load_model(path)
-    return MODEL
+    global MODELS
+    if not path in MODELS:
+        MODELS[path] = tf.keras.models.load_model(path)
+    return MODELS[path]
 
-def verify(image):
-    temp = os.path.basename(image).split('_')
-    pred_age = int(temp[0])
-    pred_race= race_dict[int(temp[2])]
+def verify(image, pred_gender, pred_age, pred_race):
+    ## enable for verification
+    # temp = os.path.basename(image).split('_')
+    # pred_gender= gender_dict[int(temp[1])]
+    # pred_age = int(temp[0])
+    # pred_race= race_dict[int(temp[2])]
     return {
+        "gender": pred_gender,
         "age": pred_age,
         "race": pred_race
     }
@@ -36,26 +45,33 @@ def load_process_model(image):
     from keras.utils.image_utils import load_img
     from PIL import Image
 
-    model = load_model("models/saved_model_20Jul2022_01.h5")
-
     with open(image, "rb") as img_file:
         b64_string = base64.b64encode(img_file.read()).decode('utf-8')
-    
+
     img = load_img(image, color_mode = "grayscale")
     img = img.resize((128, 128), Image.ANTIALIAS)
     img = np.array(img)
+    img_reshape = img.reshape(1, 128, 128, 1)
 
-    pred = model.predict(img.reshape(1, 128, 128, 1))
-    pred_gender = gender_dict[round(pred[0][0][0])]
-    pred_age = round(pred[1][0][0])
-    pred_race = ""
+    model_01 = load_model(model_filemap.get("gender"))
+    pred_01 = model_01.predict(img_reshape)
 
-    _verify = verify(image)
+    pred_gender = gender_dict[round(pred_01[0][0][0])]
+
+    model_02 = load_model(model_filemap.get("age"))
+    pred_02 = model_02.predict(img_reshape)
+    pred_age = round(pred_02[1][0][0])
+
+    model_03 = load_model(model_filemap.get("race"))
+    pred_03 = model_03.predict(img_reshape)
+    pred_race = race_dict[list(pred_03[0][0]).index(np.max(pred_03[0][0]))]
+
+    _verify = verify(image, pred_gender, pred_age, pred_race)
 
     return {
-        "gender": pred_gender,
-        "age": _verify["age"] or pred_age,
-        "race": _verify["race"] or pred_race,
+        "gender": _verify["gender"],
+        "age": _verify["age"],
+        "race": _verify["race"],
         "base64image": b64_string
     }
 
